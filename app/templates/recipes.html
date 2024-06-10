@@ -1,0 +1,87 @@
+<!-- app/templates/recipes.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 80px;
+        }
+        .btn-edit {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .table th {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Recipe Book</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1 class="mb-4">Recipes</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Ingredients</th>
+                    <th>Instructions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recipe in recipes.items %}
+                    <tr>
+                        <td>{{ recipe.title }}</td>
+                        <td>{{ recipe.description }}</td>
+                        <td>{{ recipe.ingredients }}</td>
+                        <td>{{ recipe.instructions }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-edit mr-2">Edit</a>
+                            <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if recipes.has_prev or recipes.has_next %}
+            <ul class="pagination">
+                {% if recipes.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('recipes', page=recipes.prev_num) }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                {% endif %}
+                {% if recipes.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('recipes', page=recipes.next_num) }}">Next</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>

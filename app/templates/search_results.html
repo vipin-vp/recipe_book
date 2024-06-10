@@ -1,0 +1,73 @@
+<!-- app/templates/search_results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 80px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .table th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn-edit {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Search Results</h1>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Ingredients</th>
+                    <th>Instructions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recipe in recipes %}
+                    <tr>
+                        <td>{{ recipe.title }}</td>
+                        <td>{{ recipe.description }}</td>
+                        <td>{{ recipe.ingredients }}</td>
+                        <td>{{ recipe.instructions }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-edit mr-2">Edit</a>
+                            <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

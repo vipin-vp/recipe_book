@@ -1,0 +1,135 @@
+<!-- app/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Book</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 80px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .form-control {
+            border-radius: 20px !important;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 20px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .recipe-table th {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+        .recipe-table td {
+            border: none;
+        }
+        .recipe-actions {
+            margin-top: 20px;
+        }
+        .btn-edit {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 20px;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            border-radius: 20px;
+        }
+        .input-group-append .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Recipe Book</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% if current_user.is_authenticated %}
+            <h1 class="welcome-text">Welcome, {{ current_user.username }}!</h1>
+            <form class="search-form mb-4" action="{{ url_for('search') }}" method="GET">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="query" placeholder="Search for recipes">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+            <div class="recipe-actions">
+                <a href="{{ url_for('add_recipe') }}" class="btn btn-primary">Add Recipe</a>
+            </div>
+            <div class="recipe-container">
+                <h2 class="mt-4 mb-2">Your Recipes</h2>
+                <table class="table recipe-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Ingredients</th>
+                            <th>Instructions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recipe in current_user.recipes %}
+                            <tr>
+                                <td>{{ recipe.title }}</td>
+                                <td>{{ recipe.description }}</td>
+                                <td>{{ recipe.ingredients }}</td>
+                                <td>{{ recipe.instructions }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_recipe', recipe_id=recipe.id) }}" class="btn btn-edit mr-2">Edit</a>
+                                    <form action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-delete">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center welcome-text">
+                <h1>Welcome to Recipe Book</h1>
+                <p>Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a> to get started.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
